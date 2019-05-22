@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+
+<mapper namespace="com.sdnware.news.dao.mybatis.SysUserMapper">
+
+    <sql id="query_base_sql">
+        id, username, password, address, phone, state, pid, level, create_time as createTime
+    </sql>
+
+    <select id="findUserByName" parameterType="java.lang.String" resultMap="findUserByNameResMap">
+        SELECT
+        <include refid="query_base_sql"/>
+        FROM t_sys_user
+        <where>
+            <if test="username != null">
+                username = #{username, jdbcType=VARCHAR}
+            </if>
+        </where>
+    </select>
+
+    <select id="queryUserByName" resultType="com.sdnware.news.pojo.mybatis.SysUserInfo">
+        SELECT
+        <include refid="query_base_sql"/>
+        FROM t_sys_user
+        <where>
+            <if test="username != null">
+                username = #{username, jdbcType=VARCHAR}
+            </if> AND
+            <if test="level != null">
+                level = #{level, jdbcType=INTEGER}
+            </if>
+        </where>
+    </select>
+
+    <resultMap id="findUserByNameResMap" type="com.sdnware.news.pojo.mybatis.SysUserInfo">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="state" property="state"/>
+        <result column="pid" property="pid"/>
+        <result column="level" property="level"/>
+        <result column="createTime" property="createTime"/>
+    </resultMap>
+
+    <insert id="addUser" parameterType="com.sdnware.news.pojo.mybatis.SysUserInfo">
+        INSERT INTO T_SYS_USER
+        <trim prefix="(" suffix=")" suffixOverrides=",">
+            <!--<if test="id != null">id,</if>-->
+            <if test="username != null">username,</if>
+            <if test="password != null">password,</if>
+            <if test="address != null">address,</if>
+            <if test="phone != null">phone,</if>
+            <if test="state != null">state,</if>
+            <if test="pid != null">pid,</if>
+            <if test="level != null">level,</if>
+            <!--<if test="createTime != null">create_time,</if>-->
+        </trim>
+        <trim prefix="VALUES(" suffix=")" suffixOverrides=",">
+            <if test="username != null">#{username},</if>
+            <if test="password != null">#{password},</if>
+            <if test="address != null">#{address},</if>
+            <if test="phone != null">#{phone},</if>
+            <if test="state != null">#{state},</if>
+            <if test="pid != null">#{pid},</if>
+            <if test="level != null">#{level},</if>
+        </trim>
+    </insert>
+
+    <sql id="user_role_permission_sql">
+        u.*, r.id role_id, r.role_code, r.role_comment, p.id per_id ,p.expression, p.desc
+    </sql>
+
+    <select id="queryUserCustom" resultMap="queryUserCustomResMap">
+        SELECT <include refid="user_role_permission_sql" />
+        FROM
+            t_sys_user u,
+            t_sys_user_role ur,
+            t_sys_role r,
+            t_sys_role_permission rp,
+            t_sys_permission p
+        WHERE
+            u.id = ur.user_id
+        AND r.id = ur.role_id
+        AND r.id = rp.role_id
+        AND p.id = rp.per_id
+        AND u.username = #{username}
+        AND u.level = #{level, jdbcType=INTEGER}
+    </select>
+
+    <resultMap id="queryUserCustomResMap" type="com.sdnware.news.pojo.mybatis.SysUserInfoCustom">
+        <id column="id" property="id"/>
+        <result column="username" property="username"/>
+        <result column="password" property="password"/>
+        <result column="address" property="address"/>
+        <result column="phone" property="phone"/>
+        <result column="state" property="state"/>
+        <result column="pid" property="pid"/>
+        <result column="level" property="level"/>
+        <result column="create_time" property="createTime"/>
+        <collection property="roles" ofType="com.sdnware.news.pojo.mybatis.SysRoleInfoCustom">
+            <id column="role_id" property="id" />
+            <result column="role_code" property="roleCode" />
+            <result column="role_comment" property="roleComment" />
+            <collection property="permissions" ofType="com.sdnware.news.pojo.mybatis.SysPermissionInfo">
+                <id column="per_id" property="id" />
+                <result column="expression" property="expression" />
+                <result column="desc" property="desc" />
+            </collection>
+        </collection>
+    </resultMap>
+
+</mapper>
