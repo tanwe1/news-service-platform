@@ -1,0 +1,2 @@
+# news-service-platform
+NULL
