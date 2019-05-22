@@ -59,8 +59,8 @@ public class ShiroConfig {
     @Bean
     public SecurityManager securityManager(RedisCacheManager redisCacheManager, ShiroSessionManager shiroSessionManager) {
         DefaultWebSecurityManager securityManager = new DefaultWebSecurityManager();
-        //ecurityManager.setCacheManager(redisCacheManager);
-        //securityManager.setSessionManager(shiroSessionManager);
+        securityManager.setCacheManager(redisCacheManager);
+        securityManager.setSessionManager(shiroSessionManager);
         securityManager.setRealm(shiroRealm());
         return securityManager;
     }
@@ -99,7 +99,8 @@ public class ShiroConfig {
 
         ShiroSessionManager shiroSessionManager = new ShiroSessionManager();
         shiroSessionManager.setSessionDAO(redisSessionDAO);
-        shiroSessionManager.setSessionIdCookieEnabled(false);
+        //是否启用/禁用Session Id Cookie，默认是启用的；如果禁用后将不会设置Session Id
+        shiroSessionManager.setSessionIdCookieEnabled(true);
         shiroSessionManager.setSessionIdUrlRewritingEnabled(false);
         shiroSessionManager.setDeleteInvalidSessions(true);
         shiroSessionManager.setSessionIdCookie(simpleCookie);

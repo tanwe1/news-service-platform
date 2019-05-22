@@ -17,12 +17,12 @@ public class ShiroSessionListener extends SessionListenerAdapter {
 
     @Override
     public void onStart(Session session) {
-        log.info("session create: " + session.getId());
+        log.debug("session create: " + session.getId());
     }
 
     @Override
     public void onExpiration(Session session) {
-        log.info("session expiration: " + session.getId());
+        log.debug("session expiration: " + session.getId());
     }
 
     @Override

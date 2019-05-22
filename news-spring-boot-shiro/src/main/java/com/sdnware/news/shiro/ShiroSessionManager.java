@@ -27,7 +27,6 @@ public class ShiroSessionManager extends DefaultWebSessionManager {
     protected Serializable getSessionId(ServletRequest request, ServletResponse response) {
         String id = StringUtils.isEmpty(WebUtils.toHttp(request).getHeader(AUTHORIZATION))
                 ? request.getParameter(AUTHORIZATION) : WebUtils.toHttp(request).getHeader(AUTHORIZATION);
-        log.info("session manager: " + id);
         if (StringUtils.isNotEmpty(id)) {
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID_SOURCE, REFERENCED_SESSION_ID_SOURCE);
             request.setAttribute(ShiroHttpServletRequest.REFERENCED_SESSION_ID, id);
@@ -40,21 +39,17 @@ public class ShiroSessionManager extends DefaultWebSessionManager {
 
     @Override
     protected Session retrieveSession(SessionKey sessionKey) throws UnknownSessionException {
-        log.info("retrieve session: " + sessionKey.getSessionId());
         Serializable sessionId = getSessionId(sessionKey);
-
         ServletRequest request = null;
         if (sessionKey instanceof WebSessionKey) {
             request = ((WebSessionKey) sessionKey).getServletRequest();
         }
-
         if (request != null && null != sessionId) {
             Object sessionObj = request.getAttribute(sessionId.toString());
             if (sessionObj != null) {
                 return (Session) sessionObj;
             }
         }
-
         Session session = super.retrieveSession(sessionKey);
         if (request != null && null != sessionId) {
             request.setAttribute(sessionId.toString(), session);
