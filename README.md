@@ -1,2 +1,2 @@
 # news-service-platform
-NULL
+Hello World
