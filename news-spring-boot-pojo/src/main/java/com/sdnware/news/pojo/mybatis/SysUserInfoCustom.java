@@ -19,4 +19,10 @@ public class SysUserInfoCustom extends SysUserInfo implements Serializable {
     @Getter @Setter
     Set<SysRoleInfoCustom> roles;
 
+    @Override
+    public String toString() {
+        return "SysUserInfoCustom{" +
+                "roles=" + roles +
+                '}';
+    }
 }

@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -11,15 +12,15 @@
         <table id="table">
             <tr>
                 <td>USERNAME:</td>
-                <td><input type="text" name="username" /></td>
+                <td><input type="text" name="username" th:value="${username}" /></td>
             </tr>
             <tr>
                 <td>PASSWORD:</td>
-                <td><input type="text" name="password" /></td>
+                <td><input type="text" name="password" th:value="${password}" /></td>
             </tr>
             <tr>
                 <td colspan="2" align="right">
-                    <label><input type="radio" name="level" value="1"/>一级用户</label>
+                    <label><input type="radio" name="level" value="1" checked/>一级用户</label>
                     <label><input type="radio" name="level" value="2" />二级用户</label>
                 </td>
             </tr>
@@ -28,6 +29,9 @@
             </tr>
         </table>
     </form>
+</div>
+<div id="errMsg">
+    <label style="color: red;" th:text="${errMsg}"></label>
 </div>
 </body>
 </html>

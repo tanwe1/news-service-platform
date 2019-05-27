@@ -3,12 +3,15 @@ package com.sdnware.news.controller;
 import com.sdnware.news.pojo.mybatis.SysUserInfo;
 import com.sdnware.news.shiro.LoginUsernamePasswordToken;
 import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.shiro.SecurityUtils;
-import org.apache.shiro.authz.annotation.RequiresPermissions;
+import org.apache.shiro.authc.IncorrectCredentialsException;
+import org.apache.shiro.authc.UnknownAccountException;
 import org.apache.shiro.session.Session;
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
@@ -30,32 +33,37 @@ public class LoginController {
     }
 
     @PostMapping("login")
+    //public String logon(@Validated SysUserInfo sysUserInfo, ModelMap modelMap) {
     public String logon(SysUserInfo sysUserInfo, ModelMap modelMap) {
+
         String username = sysUserInfo.getUsername();
         String password = sysUserInfo.getPassword();
-        int level = sysUserInfo.getLevel();
 
-        LoginUsernamePasswordToken loginUsernamePasswordToken =
-                new LoginUsernamePasswordToken(username, password, level);
+        if (StringUtils.isEmpty(username) || StringUtils.isEmpty(password)) {
+            modelMap.addAttribute("errMsg", "请输入用户名或密码");
+        } else {
+            Integer level = sysUserInfo.getLevel();
 
-        Subject subject = SecurityUtils.getSubject();
-        try {
-            subject.login(loginUsernamePasswordToken);
-            if (subject.isAuthenticated()) {
-                Session session = subject.getSession();
-                session.setAttribute("username", username);
-                session.setAttribute("level", level);
+            LoginUsernamePasswordToken loginUsernamePasswordToken =
+                    new LoginUsernamePasswordToken(username, password, level);
+
+            Subject subject = SecurityUtils.getSubject();
+            try {
+                subject.login(loginUsernamePasswordToken);
+                if (subject.isAuthenticated()) {
+                    Session session = subject.getSession();
+                    session.setAttribute("username", username);
+                    session.setAttribute("level", level);
+                    return "redirect:/index";
+                }
+            } catch (UnknownAccountException | IncorrectCredentialsException e) {
+                modelMap.addAttribute("errMsg", "用户名或密码错误");
+            } catch (Exception e) {
+                e.printStackTrace();
+                modelMap.addAttribute("errMsg", e.getMessage());
             }
-        } catch (Exception e) {
-            /**
-             IncorrectCredentialsException 密码不匹配
-             UnknownAccountException 账号不匹配
-             **/
-            e.printStackTrace();
-            modelMap.addAttribute("err_msg", e.getMessage());
-            return "system/login";
         }
-        return "redirect:/index";
+        return "system/login";
     }
 
     @GetMapping("logout")

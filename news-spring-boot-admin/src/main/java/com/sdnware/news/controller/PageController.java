@@ -1,7 +1,11 @@
 package com.sdnware.news.controller;
 
+import com.sdnware.news.common.CommonUtils;
+import com.sdnware.news.pojo.mybatis.SysUserInfoCustom;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 
 /**
  * <p>Description: </p>
@@ -14,8 +18,17 @@ import org.springframework.web.bind.annotation.GetMapping;
 @Controller
 public class PageController {
 
+    /**
+    @ModelAttribute
+    private void userModel(ModelMap modelMap) {
+        SysUserInfoCustom currentLoginUser = CommonUtils.getCurrentLoginUser();
+        modelMap.addAttribute("currentLoginUser", currentLoginUser);
+    }**/
+
     @GetMapping("index")
-    public String index() {
+    public String index(ModelMap modelMap) {
+        SysUserInfoCustom currentLoginUser = CommonUtils.getCurrentLoginUser();
+        modelMap.addAttribute("currentLoginUser", currentLoginUser);
         return "system/index";
     }
 

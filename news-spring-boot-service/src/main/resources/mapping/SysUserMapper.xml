@@ -70,7 +70,7 @@
     </insert>
 
     <sql id="user_role_permission_sql">
-        u.*, r.id role_id, r.role_code, r.role_comment, p.id per_id ,p.expression, p.desc
+        u.*, r.id role_id, r.role_code, r.role_comment, p.id per_id ,p.expression, p.desc,re.id res_id,re.res_url,re.res_comment,re.res_pid,re.res_icon,re.res_sort_num
     </sql>
 
     <select id="queryUserCustom" resultMap="queryUserCustomResMap">
@@ -80,12 +80,16 @@
             t_sys_user_role ur,
             t_sys_role r,
             t_sys_role_permission rp,
-            t_sys_permission p
+            t_sys_permission p,
+            t_sys_role_resource rr,
+            t_sys_resource re
         WHERE
             u.id = ur.user_id
         AND r.id = ur.role_id
         AND r.id = rp.role_id
         AND p.id = rp.per_id
+        AND r.id = rr.role_id
+        AND re.id = rr.res_id
         AND u.username = #{username}
         AND u.level = #{level, jdbcType=INTEGER}
     </select>
@@ -108,6 +112,14 @@
                 <id column="per_id" property="id" />
                 <result column="expression" property="expression" />
                 <result column="desc" property="desc" />
+            </collection>
+            <collection property="resources" ofType="com.sdnware.news.pojo.mybatis.SysResourceInfo">
+                <id column="res_id" property="id" />
+                <result column="res_url" property="resUrl" />
+                <result column="res_comment" property="resComment" />
+                <result column="res_pid" property="resPid" />
+                <result column="res_icon" property="resIcon" />
+                <result column="res_sort_num" property="resSortNum" />
             </collection>
         </collection>
     </resultMap>

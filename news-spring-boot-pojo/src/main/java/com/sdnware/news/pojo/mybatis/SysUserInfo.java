@@ -2,7 +2,9 @@ package com.sdnware.news.pojo.mybatis;
 
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
 
+import javax.validation.constraints.NotEmpty;
 import java.io.Serializable;
 import java.util.Date;
 
@@ -16,9 +18,11 @@ public class SysUserInfo implements Serializable {
     private Integer id;
     @Getter
     @Setter
+    @NotEmpty(message = "用户名不能为空")
     private String username;
     @Getter
     @Setter
+    @NotEmpty(message = "密码不能为空")
     private String password;
     @Getter
     @Setter

@@ -5,6 +5,7 @@ import lombok.Setter;
 
 import java.io.Serializable;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * <p>Description: 角色扩展实体</p>
@@ -18,5 +19,14 @@ public class SysRoleInfoCustom extends SysRoleInfo implements Serializable {
 
     @Getter @Setter
     Set<SysPermissionInfo> permissions;
+    @Getter @Setter
+    Set<SysResourceInfo> resources;
 
+    @Override
+    public String toString() {
+        return "SysRoleInfoCustom{" +
+                "permissions=" + permissions.stream().map( permission -> permission.getExpression()).collect(Collectors.toSet()) +
+                ", resources=" + resources +
+                '}';
+    }
 }
