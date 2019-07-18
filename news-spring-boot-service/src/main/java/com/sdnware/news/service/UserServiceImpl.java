@@ -3,6 +3,7 @@ package com.sdnware.news.service;
 import com.alibaba.dubbo.config.annotation.Service;
 import com.sdnware.news.api.UserService;
 import com.sdnware.news.dao.mybatis.SysUserMapper;
+import com.sdnware.news.datasource.DataSource;
 import com.sdnware.news.pojo.mybatis.SysUserInfo;
 import com.sdnware.news.pojo.mybatis.SysUserInfoCustom;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,6 +32,7 @@ public class UserServiceImpl implements UserService<SysUserInfo>{
         return sysUserMapper.findUserByName(username);
     }
 
+    @DataSource(name = "")
     @Override
     public SysUserInfo queryUserByName(String username, int level) {
         return sysUserMapper.queryUserByName(username, level);
